@@ -1,0 +1,254 @@
+{% extends '../base.html' %}
+
+{% block title %}Apply | {% end %}
+
+{% block body_class %}apply{% end %}
+
+{% block content %}
+<div id="main" role="main">
+	<h1>
+		Submissions   ({{ total_count }})
+	</h1>
+	
+	<hr />
+
+	<form class="form-horizontal" role="form" method="get" action="">
+		<div class="form-group col-sm-3 row">
+			<label for="inputEmail3" class="col-sm-3 control-label">Name</label>
+			<div class="col-sm-9">
+	  			<input type="text" class="form-control" name="name" placeholder="Applicant's Name">
+			</div>
+		</div>
+
+		<div class="form-group col-sm-4 row">
+			<label for="inputEmail3" class="col-sm-4 control-label">Rated By</label>
+			<div class="col-sm-8">
+				<select class="form-group" name="rated_by">
+					<option value="">---</option>
+					<option value="unrated">Unrated</option>
+					<option value="nextround">Next Round</option>
+				</select>
+			</div>
+
+		</div>
+
+		<div class="form-group col-sm-4 row">
+			<label for="inputEmail3" class="col-sm-4 control-label">Sort By</label>
+			<div class="col-sm-8">
+				<select class="form-group" name="sort">
+					<option value="">---</option>
+					<option value="your_rating">Your Rating</option>
+					<option value="average_rating">Average Rating</option>
+					<option value="awesome_rating">Awesome Algorithm</option>
+				</select>
+			</div>
+		</div>
+
+		<!--
+		<div class="form-group col-sm-3">
+			<label>
+      			Show all<input type="checkbox">
+    		</label>
+		</div>
+		-->
+
+		<div class="col-sm-1 row">
+			<button type="submit" class="btn btn-default">Search</button>
+		</div>
+	</form>
+	
+	<table class="table">
+		<tr>
+			<th></th>
+			<th>
+				Name
+			</th>
+			<th>
+				Why are you interested?
+			</th>
+			<th>
+				Which services?
+			</th>
+			<th>
+				Your Rating
+			</th>
+			<th>
+				Average Rating
+			</th>
+			<th></th>
+		</tr>
+		{% for i, submission in enumerate(submissions) %}
+			<tr id="{{ submission['username'] }}">
+
+				<td>
+					{% if page == "all" %}
+					{{ i + 1 }}
+					{% else %}
+					{{ (page - 1) * 10 + i + 1 }}
+					{% end %}
+				</td>
+				<td>
+					<a title="Google Search for {{ submission['name'] }}" href="https://www.google.com/#q={{ submission["name"] }}" target="_blank"><b>{{ submission["name"] }}</b></a><br />
+					<a href="http://twitter.com/{{ submission["username"] }}" target="_blank">@{{ submission["username"] }}</a></br>
+
+					{% if helper.nextround_rating_of(submission) %}
+						<b>On to Next Round!</b>
+					{% end %}
+				</td>
+				<td>
+					{% if submission["video1_token"] %}
+							<ziggeo ziggeo-popup ziggeo-width=200 ziggeo-height=60 ziggeo-video="{{ submission["video1_token"] }}" ziggeo-server_auth="091847a49a1014a18036151a0acd3170"></ziggeo>
+					{% else %}
+						No Video Submission
+					{% end %}
+				</td>
+				<td>
+					{% if submission["video2_token"] %}
+							<ziggeo ziggeo-popup ziggeo-width=200 ziggeo-height=60 ziggeo-video="{{ submission["video2_token"] }}" ziggeo-server_auth="091847a49a1014a18036151a0acd3170"></ziggeo>
+					{% else %}
+						No Video Submission
+					{% end %}
+				</td>
+				<td>
+					{% if helper.has_rated_on(submission) %}
+						<div class="rateit submission-rating" data-submission="{{ submission['username'] }}" data-rateit-value="{{ helper.rating_of(submission) }}" data-rateit-ispreset="true" data-rateit-resetable="false"></div>
+					{% else %}
+						<div class="rateit submission-rating" data-submission="{{ submission['username'] }}" data-rateit-resetable="false"></div>
+					{% end %}
+					
+				</td>
+				<td>
+					{% if helper.has_rated_on(submission) or show_all %}
+						<div class="rateit" data-rateit-value="{{ helper.average_rating_of(submission) }}" data-rateit-ispreset="true" data-rateit-readonly="true"></div>
+					{% else %}
+						&mdash;
+					{% end %}
+					
+					{% for rating in submission['ratings'] %}
+					<br />
+					<span style="font-size: .75em; color: #999">
+						{{ rating }} 
+						{% if show_all %}
+							{{ submission['ratings'][rating] }}
+						{% end %}
+					</span>
+					{% end %}
+				</td>
+				<td>
+					<a href="#{{ submission['username'] }}" class="js-expand btn" data-target="{{ submission['username'] }}">View Details</a>
+				</td>
+			</tr>
+			<tr class="submission-detail" id="{{ submission['username'] }}-detail" style="display:none">
+				<td colspan="7" style="border-top: none; padding-top:0;">
+					<div class="row">
+						<div class="col-sm-4">
+							<p><b>Location:</b> {{ submission['location'] }}</p>
+							<p><b>Email:</b> {{ submission['email'] }}</p>
+							{% try %}
+							<p>Submitted {{ submission["submission_date"].strftime('%m/%d/%Y') }}</p>
+							{% except %}{% end %}
+						</div>
+						<div class="col-sm-4">
+								<p><b>Links:</b></p>
+								{% set links = submission['web'].split() %}
+								{% for link in links %}
+									{% if 'http' not in link %}
+										<a href="http://{{ link }}" target="_blank">{{ link }}</a><br />
+									{% else %}
+										<a href="{{ link }}" target="_blank">{{ link }}</a><br />
+									{% end %}
+								{% end %}
+						</div>
+						<div class="col-sm-4">
+							<p><b>Projects:</b></p>
+							{{ submission['projects'] }}
+						</div>									
+					</div>
+				</td>
+			</tr>
+		{% end %}
+	</table>
+
+
+	{% if page_count > 1 %}
+		<hr />
+		<ul class="nav nav-pills">
+			{% if args_len > 0 %}{% set divider = "&" %}{% else %}{% set divider = "?" %}{% end %}
+			{% for i in range(page_count) %}
+			<li {% if page == i + 1 %}class="active"{% end %}><a href="{{ current_path }}{{ divider }}page={{ i + 1 }}">{{ i + 1 }}</a></li>
+			{% end %}
+			<li {% if page == "all" %}class="active"{% end %}><a href="/apply/admin?page=all">all</a></li>
+		</ul>
+		
+		<hr />
+	{% end %}
+</div>
+
+{% end %}
+
+
+{% block javascript %}
+<link rel="stylesheet" href="//assets.ziggeo.com/css/ziggeo-betajs-player.min.css" />
+<script src="//assets.ziggeo.com/js/ziggeo-json2-betajs-player.min.js"></script>
+<script>ZiggeoApi.token = "{{ settings.get('ZIGGEO_TOKEN') }}";</script>
+<link rel="stylesheet" href="/static/css/rateit.css" />
+<script src="/static/js/jquery.rateit.min.js"></script>
+<script type="text/javascript">
+    $(".submission-rating").bind('rated', function (event, value) {
+    	var submission = $(this).attr("data-submission");
+    	$.ajax("/apply/admin/api/rate/" + submission + "?rating=" + value, {
+    		type: "POST"
+    	});
+    	console.log("/apply/admin/api/rate/" + submission + "?rating=" + value);
+    });
+
+    $(".nextround-rating").bind('click', function (event, value) {
+    	var submission = $(this).attr("data-submission");
+    	var current_value = $(this).attr("data-nextround-value");
+    	console.log(current_value);
+    	if (current_value == 'True'){
+    		value = 'false';
+    	}
+    	else {
+    		value = 'true';
+    	}
+    	$.ajax("/apply/admin/api/rate/" + submission + "?nextround=" + value, {
+    		type: "POST"
+    	});
+    	console.log("/apply/admin/api/rate/" + submission + "?nextround=" + value);
+    });
+    
+    $('.js-expand').click(function(e) {
+	    //e.preventDefault();
+	    openPanel($(this).attr('data-target'));
+    });
+    
+    var openPanel = function(username) {
+	    var panel = $("#" + username + '-detail');
+	    var summary = $("#" + username);
+	    $('.js-expand').text('View Submission');
+	    $('tr').removeClass('active');
+	    
+	    if (!panel.is(':visible')) {
+	    	$(".submission-detail").hide();
+	    	$("#" + username + '-summary .js-expand').text('View Details');
+	    	window.location.hash = username;
+	    	panel.slideDown();
+	    	panel.addClass('active');
+	    	summary.addClass('active');
+	    	$("#" + username + '-summary .js-expand').text('Hide Details');
+	    } else {
+	    	window.location.hash = ""
+	    	panel.slideUp();
+	    }
+    };
+    
+    $(document).ready(function(){
+	    if (window.location.hash) {
+		    openPanel(window.location.hash.split("#")[1]);
+	    }
+    });
+    
+</script> 
+{% end %}
+

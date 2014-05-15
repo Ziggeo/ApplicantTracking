@@ -1,0 +1,140 @@
+{% extends '../base.html' %}
+
+{% block title %}Apply | {% end %}
+
+{% block body_class %}jobs{% end %}
+
+{% block content %}
+<div id="main" role="main" class="apply">
+	
+	<div class="row">
+		<div class="col-sm-4">
+			<h1>
+				Apply
+			</h1>
+			<p class="text-muted step">(step 1 of 3)</p>
+		</div><!-- /.col -->
+		<div class="col-sm-8">
+			<div class="alert alert-success">
+				<b>
+					Welcome!<br/>
+					Thanks for taking the time to apply for our position.
+				</b>
+			</div>
+			
+			<p>The following application should take about 15 minutes to complete.
+			<p>
+				<b>STEP 1:</b> Fill out the form below.
+			</p>
+			<p>
+				<b>STEP 2:</b> Record two short video responses on the following pages:
+			</p>
+			<ul>
+				<li><b>"Why are you interested in the position?"</b> <br /><span class="text-muted">(up to a 90-second response)</span>
+				</li>
+				<li><b>"What inspires you the most, and why?"</b> <br /><span class="text-muted">(up to a 120-second response)</span>
+					<p><i>Hint: The browser will prompt you to record using your computer's camera and microphone. Please make sure you're all set in a quiet space.</i> </p>
+				</li>
+			</ul>
+			
+			
+			<p>
+				<b>STEP 3:</b> Submit your application.
+			</p>
+
+			<p>
+				<i>Note: once you submit each section, you will be unable to return and edit your response in that section.</i>
+			</p>
+			<hr />
+			<p>In the first section (below), we're looking to see links that will help us get to know you. This could be your personal blog, Tumblr, Github profile or Twitter account - whatever represents you best. We expect your web presence to represent who you are, not who you think an employer wishes you were, so please don't waste time sanitizing your web presence before sending us there. We get it.</p>
+			<style>
+				.error {
+					background-color: #FFDDDD;
+					color: red;
+				}
+				.error-desc {
+					display: none;
+				}
+				.error .error-desc {
+					display: inherit;
+				}
+			</style>
+			<form method="POST" action="/apply">
+				<input type="hidden" name="state" value="0" />
+				<table class="table">
+					<tr class="{{ 'error' if 'name' in errors else ''}}">
+								<th>
+									Your Name *
+								</th>
+											<td>
+												<input type="text" class="form-control" name="name" value="{{ form['name'] }}" />
+												<p class="error-desc">
+													{{ errors['name'] if 'name' in errors else ''}}
+												</p>
+											</td>
+									</tr>
+					<tr class="{{ 'error' if 'email' in errors else ''}}">
+						<th>
+							Email *
+						</th>
+			          	<td>
+			          		<input type="text" class="form-control" name="email" value="{{ form['email'] }}"/>
+			          		<p class="error-desc">
+			          			{{ errors['email'] if 'email' in errors else ''}}
+			          		</p>
+			          	</td>
+			        </tr>
+			    <tr class="{{ 'error' if 'location' in errors else ''}}">
+			    			<th>
+			    				Location *
+			    			</th>
+			    						<td>
+			    							<input type="text" class="form-control" name="location" value="{{ form['location'] }}" placeholder="Where are you now?" />
+			    							<p class="error-desc">
+			    								{{ errors['location'] if 'location' in errors else ''}}
+			    							</p>
+			    						</td>
+			    				</tr>
+					<tr class="{{ 'error' if 'web' in errors else ''}}">
+						<th>
+							You, on the Web *
+						</th>
+			          	<td>
+			          		<textarea class="form-control" name="web" placeholder="Any public social links that help us get to know you. (Please put each link on a new line.)">{{ form['web'] }}</textarea>	          		
+			          		<p class="error-desc">
+			          			{{ errors['web'] if 'web' in errors else ''}}
+			          		</p>
+			          	</td>
+			        </tr>
+					<tr class="{{ 'error' if 'projects' in errors else ''}}">
+						<th>
+							Projects
+						</th>
+			          	<td>
+			          		<textarea class="form-control" name="projects" placeholder="Any links to projects you've built or worked on. (Please put each link on a new line.)">{{ form['projects'] }}</textarea>
+			          		<p class="error-desc">
+			          			{{ errors['projects'] if 'projects' in errors else ''}}
+			          		</p>
+			          	</td>
+			        </tr>
+			        <tr>
+			        	<th colspan="2">
+			        		<input class="btn btn-large btn-primary pull-right" type="submit" value="Next" />
+			        	</th>
+			        </tr>
+			    </table>
+			    * Required fields
+			</form>
+
+			<p><small>
+				We support workplace diversity and does not discriminate in employment matters on the basis of race, color, religion, gender, national origin, age, military service eligibility, veteran status, sexual orientation, marital status, disability, or any other protected class.
+			</small></p>
+		</div><!-- /.col -->
+	</div><!-- /.row -->
+</div>
+{% end %}
+
+
+{% block javascript %}
+
+{% end %}

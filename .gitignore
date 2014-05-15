@@ -1,0 +1,8 @@
+.DS_Store
+*.pyc
+.env
+ghostdriver.log
+settings_local_environ.py
+.project
+.pydevproject
+.settings/
