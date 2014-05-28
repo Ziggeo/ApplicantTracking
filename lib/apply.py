@@ -104,6 +104,11 @@ class Process(util.SessionHandler):
             
             
 class AdminHelper(StaffHandler):
+    def render(self, template, **kwargs):
+        kwargs['current_path'] = self.request.uri
+        kwargs['args_len'] = len(self.request.arguments)
+        super(AdminHelper, self).render(template, **kwargs)
+
     def has_rated_on(self, submission):
         return self.current_user in submission["ratings"]
     
