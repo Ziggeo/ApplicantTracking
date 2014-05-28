@@ -32,7 +32,7 @@
   {% block css %}{% end %}
 </head>
 
-<body data-menu-position="closed" class="{{ body_location_class }} {% block body_class %}{% end %} {% if current_user in settings.get('staff') %}staff{% end %}">
+<body data-menu-position="closed" class="home {% block body_class %}{% end %}">
   {% block submit_area %}
     <div class="modal fade in" id="submit-modal">
       <div class="modal-dialog">
@@ -64,21 +64,6 @@
         <ul id="main-nav">
           <li id="nav-apply"><a href="/apply">Apply</a></li>
         </ul>
-        <div id="login">
-          {% if current_user %}
-            Welcome, <a href="/user/{{current_user}}" class="login">@{{ current_user }}</a>! &nbsp;
-            
-            <a class="login" href="/user/{{current_user}}/settings">Settings</a>&nbsp;
-            
-            {% if current_user_can('see_admin_link') %}
-              <a class="login" href="/admin">Admin</a> &nbsp;
-            {% end %}
-            
-            <a class="login" href="/auth/logout?next={{ current_path }}">Logout</a>
-          {% else %}
-            <a class="login" href="/auth/twitter/?next={{ current_path }}">Log in with Twitter</a>
-          {% end %}
-        </div>
       </div>
     </header>
     {% block precontent %}{% end %}

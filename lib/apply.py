@@ -1,12 +1,23 @@
-import app.basic
 import tornado.web
 from lib import applydb
+from lib import util
 from datetime import datetime
 import settings
 from operator import itemgetter # For post-DB call sorting
 
 
-class Process(app.basic.BaseHandler):
+class StaffHandler(tornado.web.RequestHandler):
+  def basic_auth(self, user, password):
+      for admin in settings.get("admins").split(";") :
+        credentials = admin.split(":")
+        if (user == credentials[0] and password == credentials[1]) :
+          return True
+      return False
+
+
+
+
+class Process(util.SessionHandler):
     @tornado.web.authenticated
     def get(self):
         #allows for admin/dev override
@@ -35,23 +46,7 @@ class Process(app.basic.BaseHandler):
         self.render('apply/step2.html', submission = submission)
 
     def get_step_3(self, submission):
-        # Email applicant confirming completion of the application process
-        try:
-            submission = applydb.obtain_submission(self.current_user)
-            if 'name' in submission.keys():
-                name = submission['name']
-            else: 
-                name = submission['username']
-            text = 'Thanks, %s. Your application is complete. We will begin reviewing applications shortly, and we will be in touch regarding next steps. If you have any specific questions, please reply to this email.' % submission['name']
-            html = 'Thanks, %s.<br><br>Your application is complete.<br><br>We will begin reviewing applications shortly, and we will be in touch regarding next steps. If you have any specific questions, please reply to this email.' % name
-            self.send_email('noreply@noreply.com', 
-                            submission['email'], 
-                            'Applicant Tracking Confirmation',
-                            text,
-                            html=html)
-        except:
-            print 'Error sending completed applicant an email'
-
+        submission = applydb.obtain_submission(self.current_user)
         self.render('apply/confirmation.html', submission = submission)
 
     def post_step_0(self, submission):
@@ -108,7 +103,7 @@ class Process(app.basic.BaseHandler):
             self.get_step_3(submission)
             
             
-class AdminHelper(app.basic.BaseHandler):
+class AdminHelper(StaffHandler):
     def has_rated_on(self, submission):
         return self.current_user in submission["ratings"]
     
@@ -143,94 +138,87 @@ class AdminHelper(app.basic.BaseHandler):
 
 
 # /apply/admin
+@util.require_basic_auth
 class AdminList(AdminHelper):
-    @tornado.web.authenticated
     def get(self):
-        if self.current_user not in settings.get('staff'):
-            self.redirect('/')
-        else:
-            # Search arguments or default to all
-            name = self.get_argument('name', None)
-            rated_by = self.get_argument('rated_by', None)
-            kwargs = {}
-            
-            if name:
-                kwargs['name'] = {"$regex": name}
-            
-            if rated_by == 'unrated':
-                kwargs['ratings'] = {}
-            elif rated_by == 'nextround':
-                kwargs['nextround'] = 'true'
-            elif rated_by: # For rated by a specific individual
-                kwargs['ratings.' + rated_by] = {"$exists": True}
+        # Search arguments or default to all
+        name = self.get_argument('name', None)
+        rated_by = self.get_argument('rated_by', None)
+        kwargs = {}
+        
+        if name:
+            kwargs['name'] = {"$regex": name}
+        
+        if rated_by == 'unrated':
+            kwargs['ratings'] = {}
+        elif rated_by == 'nextround':
+            kwargs['nextround'] = 'true'
+        elif rated_by: # For rated by a specific individual
+            kwargs['ratings.' + rated_by] = {"$exists": True}
 
-            # Sort argument
-            sort = self.get_argument('sort', None)
-            if sort == "your_rating":
-                sort = self.current_user # Hack to pass in username as part of sort
+        # Sort argument
+        sort = self.get_argument('sort', None)
+        if sort == "your_rating":
+            sort = self.current_user # Hack to pass in username as part of sort
 
-            # DB call
-            submissions = applydb.get_submissions(kwargs, submitted=True, sort=sort)
+        # DB call
+        submissions = applydb.get_submissions(kwargs, submitted=True, sort=sort)
 
-            #url_base = # everything in the url except page=X
+        #url_base = # everything in the url except page=X
 
-            # Sort by total rating (not in database)
-            if sort == "average_rating":
-                for s in submissions:
-                    s['average_rating'] = self.average_rating_of(s)
-                submissions = sorted(submissions, key=itemgetter('average_rating'), reverse=True)
+        # Sort by total rating (not in database)
+        if sort == "average_rating":
+            for s in submissions:
+                s['average_rating'] = self.average_rating_of(s)
+            submissions = sorted(submissions, key=itemgetter('average_rating'), reverse=True)
 
-            # Sort by Zander's algorithm
-            if sort == "awesome_rating":
-                for s in submissions:
-                    s['awesome_rating'] = self.awesome_rating_of(s)
-                submissions = sorted(submissions, key=itemgetter('awesome_rating'), reverse=True)
+        # Sort by Zander's algorithm
+        if sort == "awesome_rating":
+            for s in submissions:
+                s['awesome_rating'] = self.awesome_rating_of(s)
+            submissions = sorted(submissions, key=itemgetter('awesome_rating'), reverse=True)
 
 
-            # Pagination
-            page = self.get_argument('page', '1')
-            per_page = 10
-            total_count = len(submissions)
-            page_count = total_count / per_page
+        # Pagination
+        page = self.get_argument('page', '1')
+        per_page = 10
+        total_count = len(submissions)
+        page_count = total_count / per_page
 
-            if page != "all":
-                page = int(page)                    
-                if page <= page_count:
-                    submissions = submissions[(page-1)*per_page:page*per_page]
-                else:
-                    page = 1
+        if page != "all":
+            page = int(page)                    
+            if page <= page_count:
+                submissions = submissions[(page-1)*per_page:page*per_page]
+            else:
+                page = 1
 
-            # Override argument to show all average ratings
-            show_all = self.get_argument('show_all', False)
+        # Override argument to show all average ratings
+        show_all = self.get_argument('show_all', False)
 
-            return self.render('apply/admin_list.html', submissions = submissions, helper = self, total_count=total_count, page_count = page_count, page = page, show_all = show_all)
+        return self.render('apply/admin_list.html', submissions = submissions, helper = self, total_count=total_count, page_count = page_count, page = page, show_all = show_all)
     
 
 
 
+@util.require_basic_auth
 class AdminView(AdminHelper):
-    @tornado.web.authenticated
     def get(self, screen_name):
-        if self.current_user not in settings.get('staff'):
-            self.redirect('/')
-        else:
-            submission = applydb.get_submission(screen_name)
-            self.render('apply/admin_view.html', submission = submission, helper = self)
+        submission = applydb.get_submission(screen_name)
+        self.render('apply/admin_view.html', submission = submission, helper = self)
 
 
 
-class AdminApiRate(app.basic.BaseHandler):
-    @tornado.web.authenticated
+@util.require_basic_auth
+class AdminApiRate(StaffHandler):
     def post(self, screen_name):
-        if self.current_user in settings.get('staff'):
-            submission = applydb.get_submission(screen_name)
-            rating = self.get_argument("rating", None)
-            if submission and rating != None :
-                applydb.rate_submission(submission, self.current_user, float(rating))
+        submission = applydb.get_submission(screen_name)
+        rating = self.get_argument("rating", None)
+        if submission and rating != None :
+            applydb.rate_submission(submission, self.current_user, float(rating))
 
-            nextround = self.get_argument("nextround", None)
-            if submission:
-                submission['nextround'] = nextround
-                print submission['nextround']
-                applydb.update_submission(submission, {"nextround": submission['nextround']})          
+        nextround = self.get_argument("nextround", None)
+        if submission:
+            submission['nextround'] = nextround
+            print submission['nextround']
+            applydb.update_submission(submission, {"nextround": submission['nextround']})          
 

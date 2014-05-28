@@ -16,29 +16,42 @@ Built with:
 
  * Python / [Tornado](http://tornadoweb.org)
  * [Mongodb](http://www.mongodb.com/)
- * [Twitter](http://dev.twitter.com)
- * [Sendgrid](http://sendgrid.com/docs/API_Reference/)
  * [Ziggeo](http://ziggeo.com)
 
 Setup
 ======
 
-Prior to installation, you'll need to do a few things:
+1 Obtain our code
+1.1 Clone our repository into an empty directory.
+1.2 Delete .git directory
+2 Obtain Heroku
+2.1 Go to Heroku and create an account
+2.2 Create a Heroku application
+2.3 Add a Credit Card
+2.4 Add MongoLab Addon
+2.5 Install the Heroku Toolbelt
+3 Obtain Ziggeo
+3.1 Go to Ziggeo and create an account.
+4 Configure Repository
+4.1 In your directory, start with git init
+4.2 heroku accounts:add yourappname --auto
+4.3 heroku git:remote -a yourappname --account yourappname
+4.4 heroku accounts:set yourappname
+5 Configure Keys
+5.1 Open settings.py in an editor
+5.2 Change COOKIE_SECRET to something random
+5.3 Run heroku config to obtain DB_NAME, MONGODB_URL.
+5.4 Go to the Ziggeo application to obtain ZIGGEO_TOKEN.
+6 Customize Application by changing the source code.
+6.1 Change the title in settings.py
+6.2 Add your administrators to settings.py
+6.3 Open the template files to change the overall look and the questions.
+7 Push to production
+7.1 git add .
+7.2 git commit -a -m "Initial Commit"
+7.3 git push heroku master
 
-* _Twitter_: Log into http://dev.twitter.com and set up a new application.  Note the "consumer key" and "consumer secret", which we'll need later on.
-* Sign up for an account at http://sendgrid.com for email delivery
 
-
-Configuration
--------------
-
-General app settings are controlled via the settings.py file. You will need to provide dev/local values for the following settings:
-
-* 'twitter_consumer_key' : '',
-* 'twitter_consumer_secret' : '',
-* 'sendgrid_user': '',
-* 'sendgrid_secret': '',
-* 'ziggeo_token': ''
 
 Installation
 ------------

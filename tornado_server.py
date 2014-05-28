@@ -9,18 +9,14 @@ import logging
 
 import settings 
 
-import app.user
-import app.twitter
-import app.error
 import templates
-import app.apply
+import lib.apply
 
 class Application(tornado.web.Application):
   def __init__(self):
 
     app_settings = {
-      "cookie_secret" : "change_me",
-      "login_url": "/auth/twitter",
+      "cookie_secret" : settings.get("COOKIE_SECRET"),
       "debug": False,
       "static_path" : os.path.join(os.path.dirname(__file__), "static"),
       "template_path" : os.path.join(os.path.dirname(__file__), "templates"),
@@ -28,26 +24,14 @@ class Application(tornado.web.Application):
 
     handlers = [
 
-      # account stuff
-      (r"/auth/email/?", app.user.EmailSettings),
-      (r"/auth/logout/?", app.user.LogOut),
-      (r"/user/(?P<username>[A-z-+0-9]+)/settings/?", app.user.UserSettings),
-      (r"/user/settings?", app.user.UserSettings),
-      (r"/user/(?P<screen_name>[A-z-+0-9]+)", app.user.Profile),
-      (r"/user/(?P<screen_name>[A-z-+0-9]+)/(?P<section>[A-z]+)", app.user.Profile),
-
       # apply stuff
-      (r"/", app.apply.Process),
-      (r"", app.apply.Process),
-      (r"/apply", app.apply.Process),
-      (r"/apply/", app.apply.Process),
-      (r"/apply/admin", app.apply.AdminList),
-      (r"/apply/admin/view/([^\/]+)", app.apply.AdminView),
-      (r"/apply/admin/api/rate/([^\/]+)", app.apply.AdminApiRate),
-
-      # twitter stuff
-      (r"/auth/twitter/?", app.twitter.Auth),
-      (r"/twitter", app.twitter.Twitter),
+      (r"/", lib.apply.Process),
+      (r"", lib.apply.Process),
+      (r"/apply", lib.apply.Process),
+      (r"/apply/", lib.apply.Process),
+      (r"/apply/admin", lib.apply.AdminList),
+      (r"/apply/admin/view/([^\/]+)", lib.apply.AdminView),
+      (r"/apply/admin/api/rate/([^\/]+)", lib.apply.AdminApiRate),
 
      ]
      

@@ -4,8 +4,6 @@ import json
 import logging
 from bson.objectid import ObjectId
 
-from lib import userdb
-
 from datetime import datetime
 import requests
 
@@ -87,11 +85,3 @@ def update_submission(submission, update):
 def rate_submission(submission, user, rating):
     submission["ratings"][user] = rating
     update_submission(submission, {"ratings": submission["ratings"]})
-
-#def index_submissions(include_drafts = False, page=1, per_page=10):
-#    return list(db.apply.submissions.find()) if include_drafts else list(db.apply.submissions.find({"submitted": True}, sort=[('submission_date', pymongo.DESCENDING)]).skip((page-1)*per_page).limit(per_page)) 
-
-#def get_submissions_count():
-#  return len(list(db.apply.submissions.find({"submitted": True})))
-
-
