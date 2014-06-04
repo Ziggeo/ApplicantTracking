@@ -152,7 +152,7 @@ class AdminList(AdminHelper):
         kwargs = {}
         
         if name:
-            kwargs['name'] = {"$regex": name}
+            kwargs['name'] = {"$regex": name, "$options": "-i"}
         
         if rated_by == 'unrated':
             kwargs['ratings'] = {}
