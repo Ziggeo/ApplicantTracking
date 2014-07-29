@@ -32,6 +32,7 @@ class Application(tornado.web.Application):
       (r"/apply/admin", lib.apply.AdminList),
       (r"/apply/admin/view/([^\/]+)", lib.apply.AdminView),
       (r"/apply/admin/api/rate/([^\/]+)", lib.apply.AdminApiRate),
+      (r"/apply/admin/api/comment/([^\/]+)", lib.apply.AdminApiComment),
 
      ]
      

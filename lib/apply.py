@@ -227,3 +227,11 @@ class AdminApiRate(StaffHandler):
             print submission['nextround']
             applydb.update_submission(submission, {"nextround": submission['nextround']})          
 
+
+@util.require_basic_auth
+class AdminApiComment(StaffHandler):
+    def post(self, screen_name):
+        submission = applydb.get_submission(screen_name)
+        comment = self.get_argument("comment", None)
+        if submission and comment != None :
+            applydb.update_submission(submission, {"comment": comment})

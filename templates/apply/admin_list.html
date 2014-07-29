@@ -162,6 +162,10 @@
 							<p><b>Projects:</b></p>
 							{{ submission['projects'] }}
 						</div>									
+						<div class="col-sm-8">
+							<p><b>Comments:</b></p>
+							<textarea class="comment" data-submission="{{ submission['username'] }}">{{ submission['comment'] }}</textarea>
+						</div>									
 					</div>
 				</td>
 			</tr>
@@ -199,6 +203,16 @@
     		type: "POST"
     	});
     	console.log("/apply/admin/api/rate/" + submission + "?rating=" + value);
+    });
+    
+    $(".comment").bind("input keyup change", function () {
+    	var submission = $(this).attr("data-submission");
+    	$.ajax("/apply/admin/api/comment/" + submission, {
+    		type: "POST",
+    		data: {
+    			comment: $(this).val()
+    		}
+    	});
     });
 
     $(".nextround-rating").bind('click', function (event, value) {
