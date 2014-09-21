@@ -1,6 +1,6 @@
 {% extends '../base.html' %}
 
-{% block title %}Apply | {% end %}
+{% block title %}{{ settings.get('apply_title') }} | {% end %}
 
 {% block body_class %}apply{% end %}
 
@@ -16,7 +16,7 @@
 		<div class="form-group col-sm-3 row">
 			<label for="inputEmail3" class="col-sm-3 control-label">Name</label>
 			<div class="col-sm-9">
-	  			<input type="text" class="form-control" name="name" placeholder="Applicant's Name">
+	  			<input type="text" class="form-control" name="name" placeholder="Name">
 			</div>
 		</div>
 
@@ -26,7 +26,6 @@
 				<select class="form-group" name="rated_by">
 					<option value="">---</option>
 					<option value="unrated">Unrated</option>
-					<option value="nextround">Next Round</option>
 				</select>
 			</div>
 
@@ -44,14 +43,6 @@
 			</div>
 		</div>
 
-		<!--
-		<div class="form-group col-sm-3">
-			<label>
-      			Show all<input type="checkbox">
-    		</label>
-		</div>
-		-->
-
 		<div class="col-sm-1 row">
 			<button type="submit" class="btn btn-default">Search</button>
 		</div>
@@ -63,12 +54,11 @@
 			<th>
 				Name
 			</th>
-			<th>
-				Why are you interested?
-			</th>
-			<th>
-				Which services?
-			</th>
+			{% for video in global_data["VIDEOS"] %}
+				<th>
+					{{ video["question"] }}
+				</th>
+			{% end %}
 			<th>
 				Your Rating
 			</th>
@@ -90,24 +80,16 @@
 				<td>
 					<a title="Google Search for {{ submission['name'] }}" href="https://www.google.com/#q={{ submission["name"] }}" target="_blank"><b>{{ submission["name"] }}</b></a><br />
 
-					{% if helper.nextround_rating_of(submission) %}
-						<b>On to Next Round!</b>
-					{% end %}
 				</td>
-				<td>
-					{% if submission["video1_token"] %}
-							<ziggeo ziggeo-popup ziggeo-width=200 ziggeo-height=60 ziggeo-video="{{ submission["video1_token"] }}" ziggeo-server_auth="091847a49a1014a18036151a0acd3170"></ziggeo>
-					{% else %}
-						No Video Submission
-					{% end %}
-				</td>
-				<td>
-					{% if submission["video2_token"] %}
-							<ziggeo ziggeo-popup ziggeo-width=200 ziggeo-height=60 ziggeo-video="{{ submission["video2_token"] }}" ziggeo-server_auth="091847a49a1014a18036151a0acd3170"></ziggeo>
-					{% else %}
-						No Video Submission
-					{% end %}
-				</td>
+				{% for i in range(0, len(global_data["VIDEOS"])) %}
+					<td>
+						{% if submission["video" + str(i+1) + "_token"] %}
+							<ziggeo ziggeo-popup ziggeo-width=200 ziggeo-height=60 ziggeo-video="{{ submission["video" + str(i+1) + "_token"] }}"></ziggeo>
+						{% else %}
+							No Video Submission
+						{% end %}
+					</td>
+				{% end %}
 				<td>
 					{% if helper.has_rated_on(submission) %}
 						<div class="rateit submission-rating" data-submission="{{ submission['username'] }}" data-rateit-value="{{ helper.rating_of(submission) }}" data-rateit-ispreset="true" data-rateit-resetable="false"></div>
@@ -140,29 +122,20 @@
 			<tr class="submission-detail" id="{{ submission['username'] }}-detail" style="display:none">
 				<td colspan="7" style="border-top: none; padding-top:0;">
 					<div class="row">
-						<div class="col-sm-4">
-							<p><b>Location:</b> {{ submission['location'] }}</p>
-							<p><b>Email:</b> {{ submission['email'] }}</p>
+						<div class="col-sm-6">
 							{% try %}
 							<p>Submitted {{ submission["submission_date"].strftime('%m/%d/%Y') }}</p>
 							{% except %}{% end %}
+							{% for field in global_data["FIELDS"] %}
+								<p>
+									<b>
+										{{ field["label"] }}:
+									</b>
+									{{ submission[field["name"]] }}
+								</p>
+							{% end %}
 						</div>
-						<div class="col-sm-4">
-								<p><b>Links:</b></p>
-								{% set links = submission['web'].split() %}
-								{% for link in links %}
-									{% if 'http' not in link %}
-										<a href="http://{{ link }}" target="_blank">{{ link }}</a><br />
-									{% else %}
-										<a href="{{ link }}" target="_blank">{{ link }}</a><br />
-									{% end %}
-								{% end %}
-						</div>
-						<div class="col-sm-4">
-							<p><b>Projects:</b></p>
-							{{ submission['projects'] }}
-						</div>									
-						<div class="col-sm-8">
+						<div class="col-sm-6">
 							<p><b>Comments:</b></p>
 							<textarea class="comment" data-submission="{{ submission['username'] }}">{{ submission['comment'] }}</textarea>
 						</div>									
@@ -215,22 +188,6 @@
     	});
     });
 
-    $(".nextround-rating").bind('click', function (event, value) {
-    	var submission = $(this).attr("data-submission");
-    	var current_value = $(this).attr("data-nextround-value");
-    	console.log(current_value);
-    	if (current_value == 'True'){
-    		value = 'false';
-    	}
-    	else {
-    		value = 'true';
-    	}
-    	$.ajax("/apply/admin/api/rate/" + submission + "?nextround=" + value, {
-    		type: "POST"
-    	});
-    	console.log("/apply/admin/api/rate/" + submission + "?nextround=" + value);
-    });
-    
     $('.js-expand').click(function(e) {
 	    //e.preventDefault();
 	    openPanel($(this).attr('data-target'));
@@ -251,7 +208,7 @@
 	    	summary.addClass('active');
 	    	$("#" + username + '-summary .js-expand').text('Hide Details');
 	    } else {
-	    	window.location.hash = ""
+	    	window.location.hash = "";
 	    	panel.slideUp();
 	    }
     };

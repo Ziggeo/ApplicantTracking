@@ -3,6 +3,7 @@ from lib import applydb
 from lib import util
 from datetime import datetime
 import settings
+from settings import global_data
 from operator import itemgetter # For post-DB call sorting
 
 
@@ -14,7 +15,7 @@ class StaffHandler(tornado.web.RequestHandler):
           return True
       return False
 
-
+## 0 = fields, 1..len(videos) = videos, len(videos) + 1 == confirm
 
 
 class Process(util.SessionHandler):
@@ -23,84 +24,79 @@ class Process(util.SessionHandler):
         #allows for admin/dev override
         submission = applydb.obtain_submission(self.current_user)
         step = self.get_argument('step', '') or str(submission["state"])
-        getattr(Process, "get_step_" + step)(self, submission)
+        if (step == "0") :
+            self.get_fields(submission)
+        else :
+            if (int(step) > len(global_data["VIDEOS"])) :
+                self.get_confirmation(submission)
+            else :
+                self.get_videos(submission, int(step))
 
     def post(self):
         submission = applydb.obtain_submission(self.current_user)
-        db_state = str(submission["state"])
+        db_state = submission["state"]
         post_state = self.get_argument("state", "")
-        if (db_state == post_state) :            
-            getattr(Process, "post_step_" + str(submission["state"]))(self, submission)
+        if (str(db_state) == post_state) :
+            if (db_state == 0) :
+                self.post_fields(submission)
+            else :
+                self.post_videos(submission, db_state)
         else :
-            getattr(Process, "get_step_" + db_state)(self, submission)
+            if (db_state == 0) :
+                self.get_fields(submission)
+            else :
+                if (db_state > len(global_data["VIDEOS"])) :
+                    self.get_confirmation(submission)
+                else :
+                    self.get_videos(submission, db_state)
             
-    def get_step_0(self, submission):
-        form = {"location": submission["location"], "email": submission["email"], "name": submission["name"], "web": submission["web"], "projects": submission["projects"] }
+    def get_fields(self, submission):
+        form = {}
+        for field in global_data["FIELDS"] :
+            form[field["name"]] = submission[field["name"]]
         errors = {}
-        self.render('apply/step0.html', form=form, errors=errors)
+        self.render('apply/fields.html', form=form, errors=errors, global_data = global_data)
     
-    def get_step_1(self, submission):
-        self.render('apply/step1.html', submission = submission)
-        
-    def get_step_2(self, submission):
-        self.render('apply/step2.html', submission = submission)
-
-    def get_step_3(self, submission):
-        submission = applydb.obtain_submission(self.current_user)
-        self.render('apply/confirmation.html', submission = submission)
-
-    def post_step_0(self, submission):
-        form = {
-                "email": self.get_argument("email", ""),
-                "name": self.get_argument("name", ""),
-                "web": self.get_argument("web", ""),
-                "location": self.get_argument("location", ""),
-                "links": self.get_argument("links", ""),
-                "projects": self.get_argument("projects", "")
-        }
+    def post_fields(self, submission):
+        form = {}
         errors = {}
-        if not form["email"]: errors["email"] = "Email is required."
-        if not form["name"]: errors["name"] = "Name is required."
-        if not form["web"]: errors["web"] = "Come on, there has to be something."
-        if not form["location"]: errors["location"] = "Where are you?"
+        for field in global_data["FIELDS"] :
+            form[field["name"]] = self.get_argument(field["name"], "")
+            if field["required"] and not form[field["name"]]: errors[field["name"]] = "This field is required."
         if len(errors) > 0 : 
-            self.render('apply/step0.html', form=form, errors=errors)
+            self.render('apply/fields.html', form=form, errors=errors, global_data = global_data)
         else :
             form["state"] = 1
             applydb.update_submission(submission, form)
-            self.get_step_1(submission)
+            self.get_videos(submission, 1)
+
+    def get_videos(self, submission, video_index):
+        global global_data
+        self.render('apply/videos.html', submission = submission, global_data = global_data, video_index = video_index)
+        
+    def get_confirmation(self, submission):
+        self.render('apply/confirmation.html', submission = submission, global_data = global_data)
+
             
-    def post_step_1(self, submission):
+    def post_videos(self, submission, video_index):
         form = {
                 "novideo": self.get_argument("novideo", "0"),
                 "videotoken": self.get_argument("videotoken", "")
         }
         if form["novideo"] != "1" and form["videotoken"] == "" :
-            self.render('apply/step1.html', submission = submission)
+            self.render('apply/videos.html', submission = submission, global_data = global_data, video_index = video_index)
         else :
-            data = {
-                    "video1_token": form["videotoken"],
-                    "state": 2
-            }
+            data = {}
+            data["video" + str(video_index) + "_token"] = form["videotoken"]
+            data["state"] = video_index + 1
+            if (video_index == len(global_data["VIDEOS"])) :
+                data["submitted"] = True
+                data["submission_date"] = datetime.now()
             applydb.update_submission(submission, data)
-            self.get_step_2(submission)
-            
-    def post_step_2(self, submission):
-        form = {
-                "novideo": self.get_argument("novideo", "0"),
-                "videotoken": self.get_argument("videotoken", "")
-        }
-        if form["novideo"] != "1" and form["videotoken"] == "" :
-            self.render('apply/step2.html', submission = submission)
-        else :
-            data = {
-                    "video2_token": form["videotoken"],
-                    "state": 3,
-                    "submitted": True,
-                    "submission_date": datetime.now()
-            }
-            applydb.update_submission(submission, data)
-            self.get_step_3(submission)
+            if (video_index + 1 > len(global_data["VIDEOS"])) :
+                self.get_confirmation(submission)
+            else :
+                self.get_videos(submission, video_index + 1)
             
             
 class AdminHelper(StaffHandler):
@@ -115,15 +111,6 @@ class AdminHelper(StaffHandler):
     def rating_of(self, submission):
         return submission["ratings"][self.current_user]
 
-    def nextround_rating_of(self, submission):
-        if 'nextround' in submission.keys():
-            if submission['nextround'] == 'true':
-                return True
-            else:
-                return False
-        else:
-            return False
-    
     def average_rating_of(self, submission):
         count = 0
         sum = 0
@@ -156,8 +143,6 @@ class AdminList(AdminHelper):
         
         if rated_by == 'unrated':
             kwargs['ratings'] = {}
-        elif rated_by == 'nextround':
-            kwargs['nextround'] = 'true'
         elif rated_by: # For rated by a specific individual
             kwargs['ratings.' + rated_by] = {"$exists": True}
 
@@ -200,16 +185,8 @@ class AdminList(AdminHelper):
         # Override argument to show all average ratings
         show_all = self.get_argument('show_all', False)
 
-        return self.render('apply/admin_list.html', submissions = submissions, helper = self, total_count=total_count, page_count = page_count, page = page, show_all = show_all)
+        return self.render('apply/admin_list.html', submissions = submissions, helper = self, total_count=total_count, page_count = page_count, page = page, show_all = show_all, global_data = global_data)
     
-
-
-
-@util.require_basic_auth
-class AdminView(AdminHelper):
-    def get(self, screen_name):
-        submission = applydb.get_submission(screen_name)
-        self.render('apply/admin_view.html', submission = submission, helper = self)
 
 
 
@@ -220,12 +197,6 @@ class AdminApiRate(StaffHandler):
         rating = self.get_argument("rating", None)
         if submission and rating != None :
             applydb.rate_submission(submission, self.current_user, float(rating))
-
-        nextround = self.get_argument("nextround", None)
-        if submission:
-            submission['nextround'] = nextround
-            print submission['nextround']
-            applydb.update_submission(submission, {"nextround": submission['nextround']})          
 
 
 @util.require_basic_auth

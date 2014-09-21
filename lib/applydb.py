@@ -3,6 +3,7 @@ import pymongo
 import json
 import logging
 from bson.objectid import ObjectId
+from settings import global_data
 
 from datetime import datetime
 import requests
@@ -21,11 +22,14 @@ db.apply.submissions
     email: String,
     name: String,
     comment: String,
+    
     web: String,
     location: String,
     projects: String,
+    
     video1_token: String, # ziggeo token
     video2_token: String, # ziggeo token
+    
     ratings: Object # Associative array mapping twitter handle of admin to rating
 }
 
@@ -68,16 +72,13 @@ def obtain_submission(username):
         "submission_date": None,
         "submitted": False,
         "state": 0,
-        "email": "",
-        "name": "",
-        "web": "",
         "comment": "",
-        "location": "",
-        "projects": "",
-        "video1_token": None,
-        "video2_token": None,
         "ratings": {}
     }
+    for field in global_data["FIELDS"]:
+        submission[field['name']] = ""
+    for i in range(0,len(global_data["VIDEOS"])):
+        submission["video" + str(i+1) + "_token"] = None
     db.apply.submissions.insert(submission);
     return submission 
 

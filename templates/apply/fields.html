@@ -1,0 +1,98 @@
+{% extends '../base.html' %}
+
+{% block title %}{{ settings.get('apply_title') }} | {% end %}
+
+{% block body_class %}jobs{% end %}
+
+{% block content %}
+<div id="main" role="main" class="apply">
+	
+	<div class="row">
+		<div class="col-sm-4">
+			<h1>
+				{{ settings.get('apply_title') }}
+			</h1>
+			<p class="text-muted step">(step 1 of {{ str(len(global_data["VIDEOS"]) + 1) }})</p>
+		</div><!-- /.col -->
+		<div class="col-sm-8">
+			<div class="alert alert-success">
+				<b>
+					Welcome!<br/>
+					{{ settings.get("STRING_WELCOME") }}
+				</b>
+			</div>
+			
+			<p>
+				<b>STEP 1:</b> Fill out the form below.
+			</p>
+			<p>
+				<b>STEP 2:</b> Record short video response{{ '' if len(global_data["VIDEOS"]) == 1 else 's' }} on the following page{{ '' if len(global_data["VIDEOS"]) == 1 else 's' }}:
+			</p>
+			<ul>
+				{% for video in global_data["VIDEOS"] %}
+					<li><b>"{{ video["question"] }}"</b> <br /><span class="text-muted">(up to a {{ video["limit"] }}-second response)</span>
+					</li>
+				{% end %}
+			</ul>
+			<p><i>Hint: The browser will prompt you to record using your computer's camera and microphone. Please make sure you're all set in a quiet space.</i> </p>			
+			
+			<p>
+				<b>STEP 3:</b> Submit.
+			</p>
+
+			<p>
+				<i>Note: once you submit each section, you will be unable to return and edit your response in that section.</i>
+			</p>
+			<hr />
+			<p>{{ settings.get("STRING_INTRO") }}</p>
+			<style>
+				.error {
+					background-color: #FFDDDD;
+					color: red;
+				}
+				.error-desc {
+					display: none;
+				}
+				.error .error-desc {
+					display: inherit;
+				}
+			</style>
+			<form method="POST" action="/apply">
+				<input type="hidden" name="state" value="0" />
+				<table class="table">
+					{% for field in global_data["FIELDS"] %}
+						<tr class="{{ 'error' if field['name'] in errors else ''}}">
+							<th>
+								{{ field["label"] }} {{ '*' if field['required'] else '' }}
+							</th>
+							<td>
+								<{% raw ('textarea' if field['type'] == 'textarea' else ('input type="' + field['type'] + '"')) %}
+								 class="form-control" name="{{ field['name'] }}" placeholder="{{ field['placeholder'] }}"
+								 {% raw (('>' + form[field['name']] + '</textarea>') if field['type'] == 'textarea' else ('value="' + form[field['name']] + '" />')) %}
+								<p class="error-desc">
+									{{ errors[field['name']] if field['name'] in errors else ''}}
+								</p>
+							</td>
+						</tr>
+					{% end %}
+			        <tr>
+			        	<th colspan="2">
+			        		<input class="btn btn-large btn-primary pull-right" type="submit" value="Next" />
+			        	</th>
+			        </tr>
+			    </table>
+			    * Required fields
+			</form>
+
+			<p><small>
+				{{ settings.get('STRING_BOTTOM') }}
+			</small></p>
+		</div><!-- /.col -->
+	</div><!-- /.row -->
+</div>
+{% end %}
+
+
+{% block javascript %}
+
+{% end %}

@@ -1,6 +1,6 @@
 {% extends '../base.html' %}
 
-{% block title %}Apply | {% end %}
+{% block title %}{{ settings.get('apply_title') }} | {% end %}
 
 {% block body_class %}jobs{% end %}
 
@@ -9,27 +9,29 @@
 	<div class="row">
 		<div class="col-sm-4">
 			<h1>
-				Apply
+				{{ settings.get('apply_title') }}
 			</h1>
-			<p class="text-muted step">(step 2 of 3)</p>
+			<p class="text-muted step">(step {{ str(video_index + 1) }} of {{ str(len(global_data["VIDEOS"]) + 1) }})</p>
 		</div><!-- /.col -->
 		<div class="col-sm-8">
-			<div id="intro">
+			<div id="intro" style="display:{{ 'none' if video_index != 1 else 'inherit' }}">
 				<div class="alert alert-success">
 					<b>Thanks!</b>
 				</div>
-				<p>Next, we'd like to ask you two questions, which you can respond to using the embedded video recorder.  The questions are:</p>
+				<p>Next, we'd like to ask you
+				   {{ 'a question' if len(global_data["VIDEOS"]) == 1 else "some questions" }},
+				   which you can respond to using the embedded video recorder.
+				   The {{ 'question is' if len(global_data["VIDEOS"]) == 1 else "questions are" }}:</p>
 				<ol>
-					<li><b>Why are you interested in the position?</b></li>
-					<li><b>What inspires you the most, and why?</b></li>
+				{% for video in global_data["VIDEOS"] %}
+					<li><b>{{ video["question"] }}</b>
+					</li>
+				{% end %}
 				</ol>
-				<p> 
-					We do not expect your video submissions to be perfect - we just want to learn more about you and your thinking. You will be able to re-record your video submission twice. 
-				</p>
 				<p> 
 					We are using <a href="http://ziggeo.com" target="_blank">Ziggeo</a> to record videos securely and privately. Your submission will be available only to our employees and will be deleted when this process is completed.
 				</p>
-				<p>When you're ready, continue to the next screen where you can start the video recorder for the first question.</p>
+				<p>When you're ready, continue to the next screen where you can start the video recorder.</p>
 				
 				<div style="text-align:center">
 					<a class="btn btn-large btn-primary" id="lets-go">Ready? Let's go</a>
@@ -37,19 +39,19 @@
 
 				</br>
 				<p><small>
-					We support workplace diversity and does not discriminate in employment matters on the basis of race, color, religion, gender, national origin, age, military service eligibility, veteran status, sexual orientation, marital status, disability, or any other protected class.
+					{{ settings.get('STRING_BOTTOM') }}
 				</small></p>
 			</div><!-- /#intro -->
 
-			<div id="apply-form-container" style="display:none">
+			<div id="apply-form-container" style="display:{{ 'none' if video_index == 1 else 'inherit' }}">
 				<form method="POST" action="/apply" id="apply-form">		
-					<input type="hidden" name="state" value="1" />
+					<input type="hidden" name="state" value="{{ video_index }}" />
 					<div class="well interview-question">
-						<h2>Why are you interested in the position?</h2>
-						<p class="text-muted" style="font-size: 1.2em">(up to 90 seconds)</p>
+						<h2>{{ global_data['VIDEOS'][video_index - 1]["question"] }}</h2>
+						<p class="text-muted" style="font-size: 1.2em">(up to {{ global_data['VIDEOS'][video_index - 1]["limit"] }} seconds)</p>
 					</div>
-					<ziggeo ziggeo-tags="{{ submission["username"] }}"
-						    ziggeo-limit=90
+					<ziggeo ziggeo-tags="{{ submission["username"] }},question{{video_index}}"
+						    ziggeo-limit={{ global_data['VIDEOS'][video_index - 1]["limit"] }}
 						    ziggeo-input_bind="videotoken"
 						    ziggeo-form_accept="#apply-form"
 					></ziggeo>
@@ -58,7 +60,7 @@
 						<b>Great!</b> Note: once you hit "continue" you will not be able to come back to this question.
 					</div>
 					
-					<input class="btn btn-large btn-primary pull-right" type="submit" value="Continue to video answer #2" id="submit" style="display:none" />
+					<input class="btn btn-large btn-primary pull-right" type="submit" value="Continue" id="submit" style="display:none" />
 				</form>
 			</div><!-- /.apply-form-container -->
 		</div>
