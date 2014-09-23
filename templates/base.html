@@ -69,8 +69,10 @@
       </div>
     </div>
   </div>
-  <script src="{{ static_url("js/vendor/jquery-1.9.1.min.js") }}"></script>
+  <link rel="stylesheet" href="/static/css/rateit.css" />
   <script src="{{ static_url("js/bootstrap.min.js") }}"></script>
+  <script src="{{ static_url("js/vendor/jquery-1.9.1.min.js") }}"></script>
+  <script src="/static/js/jquery.rateit.min.js"></script>
   <script type="text/javascript" src="{{ static_url("js/vendor/modernizr-2.6.2.min.js") }}"></script>
   <script type="text/javascript" src="{{ static_url("js/plugins.js") }}"></script>
   <script type="text/javascript" src="{{ static_url("js/swipe.js") }}"></script>
@@ -80,6 +82,11 @@
   <script type="text/javascript" src="{{ static_url("js/support_functions.js") }}"></script>
   <script src="http://platform.twitter.com/widgets.js"  type="text/javascript"></script>
   <script type="text/javascript" src="{{ static_url("js/vendor/jquery.jscroll.min.js") }}"></script>
+  <link rel="stylesheet" href="//assets.ziggeo.com/css/ziggeo-betajs-player.min.css" />
+  <script src="//assets.ziggeo.com/js/ziggeo-json2-betajs-player.min.js"></script>
+  <script>ZiggeoApi.token = "{{ settings.get('ZIGGEO_TOKEN') }}";</script>
+  <script type="text/javascript" src="//api.filepicker.io/v1/filepicker.js"></script>
+  <script>filepicker.setKey("{{ settings.get('FILE_PICKER_KEY') }}");</script>
   
   {% block javascript %}{% end %}
 </body>

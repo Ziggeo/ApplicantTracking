@@ -7,6 +7,7 @@ os.environ['DB_NAME'] = "apptrack" # OVERWRITE
 os.environ['MONGODB_URL'] = "mongodb://localhost:27017/apptrack" # OVERWRITE
 os.environ['ZIGGEO_TOKEN'] = "placeholder" # OVERWRITE
 os.environ["ADMINS"] = "adminname:adminpassword"
+os.environ['FILE_PICKER_KEY'] = "placeholder" # OVERWRITE
 
 os.environ['BASE_URL'] = "localhost"
 os.environ['PATH'] = "/app/bin:/app/vendor/nginx/sbin:/app/vendor/php/bin:/app/vendor/php/sbin:/usr/local/bin:/usr/bin:/bin"
@@ -57,6 +58,12 @@ global_data = {
         "name": "projects",
         "type": "textarea",
         "placeholder": "Any links to projects you've built or worked on. (Please put each link on a new line.)",
+        "required": False
+    }, {
+        "label": "CV",
+        "name": "cv",
+        "type": "file",
+        "placeholder": "Your CV (PDF, DOC, TXT)",
         "required": False
     }]
 }

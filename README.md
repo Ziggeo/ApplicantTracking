@@ -15,6 +15,7 @@ Built with:
  * Python / [Tornado](http://tornadoweb.org)
  * [Mongodb](http://www.mongodb.com/)
  * [Ziggeo](http://ziggeo.com)
+ * [Filepicker](http://filepicker.io)
 
 Setup
 ======
@@ -53,7 +54,8 @@ Setup
 
 - 6.1 Change the title in settings.py
 - 6.2 Add your administrators to settings.py
-- 6.3 Open the template files to change the overall look and the questions.
+- 6.3 Update questions & videos in settings.py
+- 6.4 Open the template files to change the overall look. (options)
 
 **7. Push to production**
 

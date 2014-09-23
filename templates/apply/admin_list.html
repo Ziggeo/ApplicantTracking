@@ -131,7 +131,11 @@
 									<b>
 										{{ field["label"] }}:
 									</b>
-									{{ submission[field["name"]] }}
+									{% if field["type"] == "file" %}
+										<a href="{{ submission[field["name"]] }}">Click to View</a>
+									{% else %}
+										{{ submission[field["name"]] }}
+									{% end %}
 								</p>
 							{% end %}
 						</div>
@@ -164,18 +168,12 @@
 
 
 {% block javascript %}
-<link rel="stylesheet" href="//assets.ziggeo.com/css/ziggeo-betajs-player.min.css" />
-<script src="//assets.ziggeo.com/js/ziggeo-json2-betajs-player.min.js"></script>
-<script>ZiggeoApi.token = "{{ settings.get('ZIGGEO_TOKEN') }}";</script>
-<link rel="stylesheet" href="/static/css/rateit.css" />
-<script src="/static/js/jquery.rateit.min.js"></script>
 <script type="text/javascript">
     $(".submission-rating").bind('rated', function (event, value) {
     	var submission = $(this).attr("data-submission");
     	$.ajax("/apply/admin/api/rate/" + submission + "?rating=" + value, {
     		type: "POST"
     	});
-    	console.log("/apply/admin/api/rate/" + submission + "?rating=" + value);
     });
     
     $(".comment").bind("input keyup change", function () {

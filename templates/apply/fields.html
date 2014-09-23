@@ -66,9 +66,14 @@
 								{{ field["label"] }} {{ '*' if field['required'] else '' }}
 							</th>
 							<td>
-								<{% raw ('textarea' if field['type'] == 'textarea' else ('input type="' + field['type'] + '"')) %}
-								 class="form-control" name="{{ field['name'] }}" placeholder="{{ field['placeholder'] }}"
-								 {% raw (('>' + form[field['name']] + '</textarea>') if field['type'] == 'textarea' else ('value="' + form[field['name']] + '" />')) %}
+								{% if field['type'] == 'textarea' %}
+									<textarea class="form-control" name="{{ field['name'] }}" placeholder="{{ field['placeholder'] }}">{{ form[field['name']] }}</textarea>
+								{% elif field['type'] == 'file' %}
+									{{ field['placeholder'] }}
+									<input type="filepicker-dragdrop" name="{{ field['name'] }}" />
+								{% else %}
+									<input type="{{ field['type'] }}" class="form-control" name="{{ field['name'] }}" placeholder="{{ field['placeholder'] }}" value="{{ form[field['name']] }}" />
+								{% end %}
 								<p class="error-desc">
 									{{ errors[field['name']] if field['name'] in errors else ''}}
 								</p>
