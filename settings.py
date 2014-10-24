@@ -16,7 +16,7 @@ os.environ['PROJECT_ROOT'] = os.path.abspath(os.path.join(os.path.dirname(__file
 
 os.environ['SITE_TITLE'] = "Applicant Tracking"
 os.environ['APPLY_TITLE'] = "Apply"   
-os.environ['STRING_BOTTOM'] = "We support workplace diversity and does not discriminate in employment matters on the basis of race, color, religion, gender, national origin, age, military service eligibility, veteran status, sexual orientation, marital status, disability, or any other protected class."
+os.environ['STRING_BOTTOM'] = "We support workplace diversity and do not discriminate in employment matters on the basis of race, color, religion, gender, national origin, age, military service eligibility, veteran status, sexual orientation, marital status, disability, or any other protected class."
 os.environ['STRING_CONFIRMATION'] = "We will begin reviewing applications shortly, and we will be in touch regarding next steps."
 os.environ["STRING_WELCOME"] = "Thanks for taking the time to apply for our position."
 os.environ["STRING_INTRO"] = "In the first section (below), we're looking to see links that will help us get to know you. This could be your personal blog, Tumblr, Github profile or Twitter account - whatever represents you best. We expect your web presence to represent who you are, not who you think an employer wishes you were, so please don't waste time sanitizing your web presence before sending us there. We get it."
