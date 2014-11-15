@@ -83,7 +83,7 @@ class Process(util.SessionHandler):
                 "novideo": self.get_argument("novideo", "0"),
                 "videotoken": self.get_argument("videotoken", "")
         }
-        if form["novideo"] != "1" and form["videotoken"] == "" :
+        if form["novideo"] != "1" and form["videotoken"] == "" and global_data['VIDEOS'][video_index - 1]["required"] :
             self.render('apply/videos.html', submission = submission, global_data = global_data, video_index = video_index)
         else :
             data = {}

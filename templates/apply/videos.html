@@ -53,12 +53,18 @@
 					<ziggeo ziggeo-tags="{{ submission["username"] }},question{{video_index}}"
 						    ziggeo-limit={{ global_data['VIDEOS'][video_index - 1]["limit"] }}
 						    ziggeo-input_bind="videotoken"
+						    {% if global_data['VIDEOS'][video_index - 1]["required"] %}
 						    ziggeo-form_accept="#apply-form"
+						    {% end %}
 					></ziggeo>
 					
 					<div class="alert alert-info" id="superwarn" style="display:none;">
 						<b>Great!</b> Note: once you hit "continue" you will not be able to come back to this question.
 					</div>
+					
+					{% if not global_data['VIDEOS'][video_index - 1]["required"] %}
+						<input class="btn btn-large pull-right" type="submit" value="Skip" id="skip" />
+					{% end %}
 					
 					<input class="btn btn-large btn-primary pull-right" type="submit" value="Continue" id="submit" style="display:none" />
 				</form>
@@ -79,7 +85,7 @@ $(document).ready(function () {
 		$('#intro').slideUp();
 	});
 	ZiggeoApi.Events.on("submitted", function () {
-		 $('#apply-no-video').hide();
+		 $("#skip").hide();
 		 $('#superwarn').show();
 		 $("#submit").show();
 	});

@@ -24,10 +24,12 @@ os.environ["STRING_INTRO"] = "In the first section (below), we're looking to see
 global_data = {
     "VIDEOS": [{
         "question": "Why are you interested in the position?",
-        "limit": 90
+        "limit": 90,
+        "required": True
     }, {
         "question": "What inspires you the most, and why?",
-        "limit": 120
+        "limit": 120,
+        "required": True
     }],
     "FIELDS": [{
         "label": "Your Name",
