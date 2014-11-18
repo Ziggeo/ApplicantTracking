@@ -173,7 +173,7 @@ class AdminList(AdminHelper):
         page = self.get_argument('page', '1')
         per_page = 10
         total_count = len(submissions)
-        page_count = total_count / per_page
+        page_count = -(-total_count // per_page)
 
         if page != "all":
             page = int(page)                    
