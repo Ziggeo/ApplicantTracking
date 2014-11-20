@@ -133,7 +133,7 @@
 									{% if field["type"] == "file" %}
 										<a href="{{ submission[field["name"]] }}">Click to View</a>
 									{% else %}
-										{{ submission[field["name"]] }}
+										{% raw linkify(submission[field["name"]]) %}
 									{% end %}
 								</p>
 							{% end %}
