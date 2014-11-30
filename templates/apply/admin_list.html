@@ -140,7 +140,23 @@
 						</div>
 						<div class="col-sm-6">
 							<p><b>Comments:</b></p>
-							<textarea class="comment" data-submission="{{ submission['username'] }}">{{ submission['comment'] }}</textarea>
+							{% if isinstance(submission['comment'], str) or isinstance(submission['comment'], unicode) %}
+								<textarea class="comment" data-submission="{{ submission['username'] }}">{{ submission['comment'] }}</textarea>
+							{% else %}
+								{% for user in submission['comment'] %}									
+									{% if user != helper.current_user %}
+									<div>
+										<p><b>{{ user }}:</b>{{ submission['comment'][user] }}</p>
+									</div>
+									{% end %}
+								{% end %}
+								<div>
+									<p>
+										Your Comment										
+									</p>
+									<textarea class="comment" data-submission="{{ submission['username'] }}">{{ submission['comment'][helper.current_user] if helper.current_user in submission['comment'] else "" }}</textarea>
+								</div>
+							{% end %}
 						</div>									
 					</div>
 				</td>

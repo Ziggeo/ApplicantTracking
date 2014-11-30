@@ -205,4 +205,4 @@ class AdminApiComment(StaffHandler):
         submission = applydb.get_submission(screen_name)
         comment = self.get_argument("comment", None)
         if submission and comment != None :
-            applydb.update_submission(submission, {"comment": comment})
+            applydb.comment_submission(submission, self.current_user, comment)

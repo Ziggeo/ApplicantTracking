@@ -72,7 +72,7 @@ def obtain_submission(username):
         "submission_date": None,
         "submitted": False,
         "state": 0,
-        "comment": "",
+        "comment": {},
         "ratings": {}
     }
     for field in global_data["FIELDS"]:
@@ -88,3 +88,9 @@ def update_submission(submission, update):
 def rate_submission(submission, user, rating):
     submission["ratings"][user] = rating
     update_submission(submission, {"ratings": submission["ratings"]})
+
+def comment_submission(submission, user, comment):
+    if (isinstance(submission["comment"], str) or isinstance(submission['comment'], unicode)):
+        submission["comment"] = {}
+    submission["comment"][user] = comment
+    update_submission(submission, {"comment": submission["comment"]})
