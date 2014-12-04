@@ -137,6 +137,13 @@
 									{% end %}
 								</p>
 							{% end %}
+							{% for i in range(0, len(global_data["VIDEOS"])) %}
+								{% if submission["video" + str(i+1) + "_token"] %}
+									<p>
+										Download video {{i+1}} <a href="http://embed.ziggeo.com/v1/applications/{{ settings.get('ZIGGEO_TOKEN') }}/videos/{{ submission["video" + str(i+1) + "_token"] }}/video.mp4">here</a>.
+									</p>
+								{% end %}
+							{% end %}							
 						</div>
 						<div class="col-sm-6">
 							<p><b>Comments:</b></p>
