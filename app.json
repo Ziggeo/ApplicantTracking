@@ -1,0 +1,18 @@
+{
+  "name": "Ziggeo Applicant Tracking",
+  "description": "This is a simple applicant tracking system featuring video interviews.",
+  "repository": "https://github.com/Ziggeo/ApplicantTracking",
+  "logo": "https://ziggeo.com/assets/images/button_play.png",
+  "keywords": ["python", "tornado", "mongodb", "filepicker", "ziggeo", "video", "recruiting"],
+  "website": "http://ziggeo.com/ziglets/applicanttracking",
+  "success_url": "/apply",
+  "SECRET_TOKEN": {
+      "description": "A secret key for verifying the integrity of signed cookies.",
+      "generator": "secret"
+  },
+  "addons": [
+    "mongolab",
+    "filepicker",
+    "ziggeo"
+  ]
+}

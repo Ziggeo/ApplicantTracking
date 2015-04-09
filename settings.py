@@ -1,13 +1,15 @@
 import os
 import time
+import urlparse
 import tornado.options
 
-os.environ['COOKIE_SECRET'] = "placeholder" # OVERWRITE
-os.environ['DB_NAME'] = "apptrack" # OVERWRITE
-os.environ['MONGODB_URL'] = "mongodb://localhost:27017/apptrack" # OVERWRITE
-os.environ['ZIGGEO_TOKEN'] = "placeholder" # OVERWRITE
+os.environ['COOKIE_SECRET'] = os.environ.get("SECRET_TOKEN", "placeholder")
+os.environ['MONGODB_URL'] = os.environ.get("MONGOLAB_URI", "mongodb://localhost:27017/apptrack")
+os.environ['DB_NAME'] = os.environ['MONGODB_URL'].rsplit('/', 1)
+os.environ['ZIGGEO_TOKEN'] = urlparse.urlsplit(os.environ.get("ZIGGEO_URL", "https://token:privatekey@srvapi.ziggeo.com")).username
+os.environ['FILE_PICKER_KEY'] = os.environ.get("FILEPICKER_API_KEY", "placeholder")
 os.environ["ADMINS"] = "adminname:adminpassword"
-os.environ['FILE_PICKER_KEY'] = "placeholder" # OVERWRITE
+
 
 os.environ['BASE_URL'] = "localhost"
 os.environ['PATH'] = "/app/bin:/app/vendor/nginx/sbin:/app/vendor/php/bin:/app/vendor/php/sbin:/usr/local/bin:/usr/bin:/bin"
