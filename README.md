@@ -1,7 +1,7 @@
 Applicant Tracking
 =================
 
-Ziggeo API (http://api.ziggeo.com) allows you to integrate video recording and playback with only
+Ziggeo API (http://ziggeo.com) allows you to integrate video recording and playback with only
 two lines of code in your site, service or app. 
 
 This is a simple applicant tracking system featuring video interviews. It was originally built by
