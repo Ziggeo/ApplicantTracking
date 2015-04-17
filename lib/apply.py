@@ -136,10 +136,18 @@ class AdminList(AdminHelper):
         # Search arguments or default to all
         name = self.get_argument('name', None)
         rated_by = self.get_argument('rated_by', None)
+        tags = self.get_argument('tags', None)
         kwargs = {}
         
         if name:
             kwargs['name'] = {"$regex": name, "$options": "-i"}
+            
+        if tags:
+        	tags = tags.split()
+        	tagQuery = []
+        	for tag in tags:
+        		tagQuery.append({"tags": {"$regex": tag, "$options": "-i"}})
+        	kwargs["$and"] = tagQuery;
         
         if rated_by == 'unrated':
             kwargs['ratings'] = {}
@@ -206,3 +214,12 @@ class AdminApiComment(StaffHandler):
         comment = self.get_argument("comment", None)
         if submission and comment != None :
             applydb.comment_submission(submission, self.current_user, comment)
+
+@util.require_basic_auth
+class AdminApiTags(StaffHandler):
+    def post(self, screen_name):
+        submission = applydb.get_submission(screen_name)
+        tags = self.get_argument("tags", None)
+        if submission and tags != None :
+            applydb.tag_submission(submission, self.current_user, tags)
+            

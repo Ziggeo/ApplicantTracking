@@ -31,6 +31,7 @@ db.apply.submissions
     video2_token: String, # ziggeo token
     
     ratings: Object # Associative array mapping twitter handle of admin to rating
+    tags: Array
 }
 
 """
@@ -73,7 +74,8 @@ def obtain_submission(username):
         "submitted": False,
         "state": 0,
         "comment": {},
-        "ratings": {}
+        "ratings": {},
+        "tags": []
     }
     for field in global_data["FIELDS"]:
         submission[field['name']] = ""
@@ -94,3 +96,9 @@ def comment_submission(submission, user, comment):
         submission["comment"] = {}
     submission["comment"][user] = comment
     update_submission(submission, {"comment": submission["comment"]})
+
+    
+def tag_submission(submission, user, tags):
+    submission["tags"] = []
+    update_submission(submission, {"tags": tags.split()})
+    

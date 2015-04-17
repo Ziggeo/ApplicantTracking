@@ -20,9 +20,16 @@
 			</div>
 		</div>
 
-		<div class="form-group col-sm-4 row">
-			<label for="inputEmail3" class="col-sm-4 control-label">Rated By</label>
-			<div class="col-sm-8">
+		<div class="form-group col-sm-3 row">
+			<label for="inputEmail3" class="col-sm-3 control-label">Tags</label>
+			<div class="col-sm-9">
+	  			<input type="text" class="form-control" name="tags" placeholder="Tags">
+			</div>
+		</div>
+
+		<div class="form-group col-sm-3 row">
+			<label for="inputEmail3" class="col-sm-3 control-label">Rated By</label>
+			<div class="col-sm-9">
 				<select class="form-group" name="rated_by">
 					<option value="">---</option>
 					<option value="unrated">Unrated</option>
@@ -31,9 +38,9 @@
 
 		</div>
 
-		<div class="form-group col-sm-4 row">
-			<label for="inputEmail3" class="col-sm-4 control-label">Sort By</label>
-			<div class="col-sm-8">
+		<div class="form-group col-sm-3 row">
+			<label for="inputEmail3" class="col-sm-3 control-label">Sort By</label>
+			<div class="col-sm-9">
 				<select class="form-group" name="sort">
 					<option value="">---</option>
 					<option value="your_rating">Your Rating</option>
@@ -146,6 +153,8 @@
 							{% end %}							
 						</div>
 						<div class="col-sm-6">
+							<p><b>Tags:</b></p>
+								<input class="tags" data-submission="{{ submission['username'] }}" value='{{ " ".join(submission['tags']) }}' />
 							<p><b>Comments:</b></p>
 							{% if isinstance(submission['comment'], str) or isinstance(submission['comment'], unicode) %}
 								<textarea class="comment" data-submission="{{ submission['username'] }}">{{ submission['comment'] }}</textarea>
@@ -204,6 +213,16 @@
     		type: "POST",
     		data: {
     			comment: $(this).val()
+    		}
+    	});
+    });
+
+    $(".tags").bind("input keyup change", function () {
+    	var submission = $(this).attr("data-submission");
+    	$.ajax("/apply/admin/api/tags/" + submission, {
+    		type: "POST",
+    		data: {
+    			tags: $(this).val()
     		}
     	});
     });
