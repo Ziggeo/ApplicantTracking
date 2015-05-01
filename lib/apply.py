@@ -60,13 +60,19 @@ class Process(util.SessionHandler):
     def post_fields(self, submission):
         form = {}
         errors = {}
+        tags = []
         for field in global_data["FIELDS"] :
-            form[field["name"]] = self.get_argument(field["name"], "")
-            if field["required"] and not form[field["name"]]: errors[field["name"]] = "This field is required."
+        	if "tag" in field and field["tag"] :
+        		if (self.get_argument(field["name"], "") != "") :
+        			tags.append(field["tag"])
+        	else :
+	            form[field["name"]] = self.get_argument(field["name"], "")
+	            if field["required"] and not form[field["name"]]: errors[field["name"]] = "This field is required."
         if len(errors) > 0 : 
             self.render('apply/fields.html', form=form, errors=errors, global_data = global_data)
         else :
             form["state"] = 1
+            form["tags"] = tags
             applydb.update_submission(submission, form)
             self.get_videos(submission, 1)
 

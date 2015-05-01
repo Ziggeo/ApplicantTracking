@@ -133,16 +133,18 @@
 							<p>Submitted {{ submission["submission_date"].strftime('%m/%d/%Y') }}</p>
 							{% except %}{% end %}
 							{% for field in global_data["FIELDS"] %}
-								<p>
-									<b>
-										{{ field["label"] }}:
-									</b>
-									{% if field["type"] == "file" %}
-										<a href="{{ submission[field["name"]] }}">Click to View</a>
-									{% else %}
-										{% raw linkify(submission[field["name"]]) %}
-									{% end %}
-								</p>
+								{% if not ("tag" in field) %}
+									<p>
+										<b>
+											{{ field["label"] }}:
+										</b>
+										{% if field["type"] == "file" %}
+											<a href="{{ submission[field["name"]] }}">Click to View</a>
+										{% else %}
+											{% raw linkify(submission[field["name"]]) %}
+										{% end %}
+									</p>
+								{% end %}
 							{% end %}
 							{% for i in range(0, len(global_data["VIDEOS"])) %}
 								{% if submission["video" + str(i+1) + "_token"] %}
