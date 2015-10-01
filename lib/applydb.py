@@ -64,9 +64,6 @@ def get_submissions(kwargs, submitted=True, sort=None):
 
 # Either finds the submission or creates the submission for the user
 def obtain_submission(username):
-    submission = get_submission(username)
-    if submission :
-        return submission
     submission = {
         "username": username,
         "creation_date": datetime.now(),
@@ -81,6 +78,10 @@ def obtain_submission(username):
         submission[field['name']] = ""
     for i in range(0,len(global_data["VIDEOS"])):
         submission["video" + str(i+1) + "_token"] = None
+    submission_from_db = get_submission(username)
+    if submission_from_db :
+        submission.update(submission_from_db)
+        return submission
     db.apply.submissions.insert(submission);
     return submission 
 
