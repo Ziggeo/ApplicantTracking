@@ -73,6 +73,12 @@
 									<input type="filepicker-dragdrop" name="{{ field['name'] }}" />
 								{% elif field['type'] == 'checkbox' %}
 									<input type="{{ field['type'] }}" name="{{ field['name'] }}" /> {{ field['placeholder'] }}
+								{% elif field['type'] == 'select' %}
+									<select name="{{ field['name'] }}">
+										{% for option in field['values'] %}
+											<option value="{{ option }}">{{ option }}</option>
+										{% end %}
+									</select>
 								{% else %}
 									<input type="{{ field['type'] }}" class="form-control" name="{{ field['name'] }}" placeholder="{{ field['placeholder'] }}" value="{{ form[field['name']] }}" />
 								{% end %}
