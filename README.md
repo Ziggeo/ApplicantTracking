@@ -39,8 +39,8 @@ Setup
 **4. Configure repository**
 
 - 4.1 In your directory, start with `git init`
-- 4.2 `heroku accounts:add yourappname --auto`
-- 4.3 `heroku git:remote -a yourappname --account yourappname`
+- 4.2 `heroku accounts:add yourappname`
+- 4.3 `heroku git:remote -a yourappname`
 - 4.4 `heroku accounts:set yourappname`
 
 **5. Configure API / service keys**
