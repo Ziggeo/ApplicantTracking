@@ -2,4 +2,3 @@ tornado
 requests
 simplejson
 pymongo
-Github
