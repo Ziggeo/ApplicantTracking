@@ -50,13 +50,13 @@
 						<h2>{{ global_data['VIDEOS'][video_index - 1]["question"] }}</h2>
 						<p class="text-muted" style="font-size: 1.2em">(up to {{ global_data['VIDEOS'][video_index - 1]["limit"] }} seconds)</p>
 					</div>
-					<ziggeo ziggeo-tags="{{ submission["username"] }},question{{video_index}}"
-						    ziggeo-limit={{ global_data['VIDEOS'][video_index - 1]["limit"] }}
-						    ziggeo-input_bind="videotoken"
+					<ziggeorecorder ziggeo-tags="{{ submission["username"] }},question{{video_index}}"
+						    ziggeo-timelimit={{ global_data['VIDEOS'][video_index - 1]["limit"] }}
+						    ziggeo-input-bind="videotoken" ziggeo-theme="modern" ziggeo-themecolor="blue"
 						    {% if global_data['VIDEOS'][video_index - 1]["required"] %}
-						    ziggeo-form_accept="#apply-form"
+						    ziggeo-form-accept="#apply-form"
 						    {% end %}
-					></ziggeo>
+					></ziggeorecorder>
 					
 					<div class="alert alert-info" id="superwarn" style="display:none;">
 						<b>Great!</b> Note: once you hit "continue" you will not be able to come back to this question.
@@ -84,13 +84,12 @@ $(document).ready(function () {
 		$('#apply-form-container').slideDown();
 		$('#intro').slideUp();
 	});
-	ZiggeoApi.Events.on("submitted", function () {
-		 $("#skip").hide();
-		 $('#superwarn').show();
-		 $("#submit").show();
+	ziggeo_app.embed_events.on("verified", function (embedding) {
+		$("#skip").hide();
+		$('#superwarn').show();
+		$("#submit").show();
 	});
-	
-	
+
 });
 </script>
 {% end %}

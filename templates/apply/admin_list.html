@@ -90,7 +90,7 @@
 				{% for i in range(0, len(global_data["VIDEOS"])) %}
 					<td>
 						{% if submission["video" + str(i+1) + "_token"] %}
-							<ziggeo ziggeo-popup ziggeo-width=200 ziggeo-height=60 ziggeo-video="{{ submission["video" + str(i+1) + "_token"] }}"></ziggeo>
+							<ziggeoplayer ziggeo-popup ziggeo-width="200" ziggeo-height="60" ziggeo-video="{{ submission["video" + str(i+1) + "_token"] }}" ziggeo-theme="modern" ziggeo-themecolor="blue"></ziggeoplayer>
 						{% else %}
 							No Video Submission
 						{% end %}
@@ -149,7 +149,7 @@
 							{% for i in range(0, len(global_data["VIDEOS"])) %}
 								{% if submission["video" + str(i+1) + "_token"] %}
 									<p>
-										Download video {{i+1}} <a href="http://embed.ziggeo.com/v1/applications/{{ settings.get('ZIGGEO_TOKEN') }}/videos/{{ submission["video" + str(i+1) + "_token"] }}/video.mp4">here</a>.
+										Download video {{i+1}} <a href="https://embed.ziggeo.com/v1/applications/{{ settings.get('ZIGGEO_TOKEN') }}/videos/{{ submission["video" + str(i+1) + "_token"] }}/video.mp4">here</a>.
 									</p>
 								{% end %}
 							{% end %}							

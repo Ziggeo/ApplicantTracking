@@ -4,7 +4,7 @@
   "repository": "https://github.com/Ziggeo/ApplicantTracking",
   "logo": "https://ziggeo.com/assets/images/button_play.png",
   "keywords": ["python", "tornado", "mongodb", "filepicker", "ziggeo", "video", "recruiting"],
-  "website": "http://ziggeo.com/ziglets/applicanttracking",
+  "website": "https://ziggeo.com/applicant-tracking/",
   "success_url": "/apply",
   "SECRET_TOKEN": {
       "description": "A secret key for verifying the integrity of signed cookies.",

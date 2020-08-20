@@ -1,7 +1,7 @@
 Applicant Tracking
 =================
 
-Ziggeo API (http://ziggeo.com) allows you to integrate video recording and playback with only
+Award winning Ziggeo API (http://ziggeo.com) allows you to integrate video recording and playback with only
 two lines of code in your site, service or app. 
 
 This is a simple applicant tracking system featuring video interviews. It was originally built by
@@ -72,3 +72,19 @@ Run the application locally
 
 3. Visit application by navigating to [http://localhost:8001](http://localhost:8001)
 
+Additional Installation Steps
+===========
+
+If you already have Python installed you are almost all set. Check out the requirements.txt for the list of modules you might need to install if they are not already installed.
+
+You can do this by using commands like so:
+```
+sudo apt install python-pip
+```
+
+Followed by pip installs like so:
+```
+pip install tornado
+pip install pymongo
+pip install requests
+```
