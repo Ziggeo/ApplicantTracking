@@ -13,9 +13,11 @@ Technology
 Built with:
 
  * Python / [Tornado](http://tornadoweb.org)
- * [Mongodb](http://www.mongodb.com/)
+ * [MongoDB](http://www.mongodb.com/)*
  * [Ziggeo](http://ziggeo.com)
  * [Filepicker](http://filepicker.io)
+
+* Please note that MongoDB no longer supports their extension on Heroku. For this reason you will need to do some simple steps on your own. Please read the section bellow "Setting up MongoDB" or "MongoDB migration".
 
 Setup
 ======
@@ -47,7 +49,7 @@ Setup
 
 - 5.1 Open settings.py in an editor
 - 5.2 Change COOKIE_SECRET to something random
-- 5.3 Run `heroku config` to obtain DB_NAME, MONGODB_URL.
+- 5.3 Run `heroku config` to obtain database name and URL (See Setting up MongoDB section).
 - 5.4 Go to the Ziggeo application to obtain ZIGGEO_TOKEN.
 
 **6. Customize application by editing source code.**
@@ -62,6 +64,40 @@ Setup
 - 7.1 `git add .`
 - 7.2 `git commit -a -m "Initial Commit"`
 - 7.3 `git push heroku master`
+
+Setting up MongoDB
+===========
+
+mLab has removed the MongoDB addon however you can still use MongoDB in your system. To set this up you have few options:
+1. Use Atlas (still mLab, just different naming)
+2. Use [ObjectRocket by Rackspace](https://elements.heroku.com/addons/ormongo) Heroku addon
+
+Benefit of using ObjectRocket's addon is that it offers you to click and install the addon as you would usually using Heroku dashboard or Heroku CLI. Everything happens within Heroku and they offer support to help you with the database setup.
+
+If you want to continue using mLab outside of scope of addon, you can do that. To do so you would need to follow these steps:
+
+1. Go to [Atlas signup](https://www.mongodb.com/cloud/atlas/signup) page. Remember the email you use as that will be used later as your username to log in.
+2. Once signed up go to [Project View](https://cloud.mongodb.com/)
+3. Go through dashboard to set everything as you prefer. Please keep in mind that you need to purchase support plan in order to be able to contact their support.
+
+To set up your Database URL please use:
+`heroku config:set DB_URL={URL YOU GOT}`
+
+You would change `{URL YOU GOT}` with the actual URL you get, so it would look something like so:
+`heroku config:set DB_URI=mongodb://heroku_12345678:random_password@ds029017.mLab.com:29017/heroku_12345678`
+
+Once you do, that is it from MongoDB side.
+
+
+MongoDB migration
+===========
+
+If you were using the Applicant tracking system for a while now, then you got emails from MongoDB and Heroku about migrating your database.
+
+Please check out the following to see how to migrate: [Guide to Migrating a Sandbox Heroku Add-on to Atlas](https://docs.mlab.com/how-to-migrate-sandbox-heroku-addons-to-atlas/)
+
+* This could only be important to those that already had this installed. If you are new to this, you will not need to follow those steps.
+* This is needed due to [Shutdown of MongoDB add-on on Heroku](https://docs.mlab.com/shutdown-of-heroku-add-on/)
 
 Run the application locally
 ===========
@@ -88,3 +124,6 @@ pip install tornado
 pip install pymongo
 pip install requests
 ```
+Changelog
+===========
+Please note that we have changed "MONGODB_URI" to "DB_URI"
