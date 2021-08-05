@@ -158,7 +158,7 @@
 							<p><b>Tags:</b></p>
 								<input class="tags" data-submission="{{ submission['username'] }}" value='{{ " ".join(submission['tags']) }}' />
 							<p><b>Comments:</b></p>
-							{% if isinstance(submission['comment'], str) or isinstance(submission['comment'], unicode) %}
+							{% if isinstance(submission['comment'], str) %}
 								<textarea class="comment" data-submission="{{ submission['username'] }}">{{ submission['comment'] }}</textarea>
 							{% else %}
 								{% for user in submission['comment'] %}									

@@ -1,14 +1,14 @@
 import os
 import time
-import urlparse
+import urllib.parse
 import tornado.options
 
 os.environ['COOKIE_SECRET'] = os.environ.get("SECRET_TOKEN", "placeholder")
-os.environ['MONGODB_URL'] = os.environ.get("MONGODB_URI", "mongodb://localhost:27017/apptrack")
+os.environ['MONGODB_URL'] = os.environ.get("DB_URI", "mongodb://localhost:27017/apptrack")
 os.environ['DB_NAME'] = urlparse.urlsplit(os.environ['MONGODB_URL']).path.replace("/","")
 os.environ['ZIGGEO_TOKEN'] = urlparse.urlsplit(os.environ.get("ZIGGEO_URL", "https://token:privatekey@srvapi.ziggeo.com")).username
 os.environ['FILE_PICKER_KEY'] = os.environ.get("FILEPICKER_API_KEY", "placeholder")
-os.environ["ADMINS"] = "adminname:adminpassword"
+os.environ["ADMINS"] = os.environ.get("ADMINS", "adminname:adminpassword")
 
 
 

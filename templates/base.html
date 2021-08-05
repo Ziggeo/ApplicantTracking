@@ -1,7 +1,7 @@
 {% if 'body_class' not in locals() %}
   {% set body_class = "" %}
 {% end %}
-{% from urlparse import urlparse %}
+{% import urllib.parse %}
 {% import settings %}
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
