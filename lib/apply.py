@@ -207,6 +207,7 @@ class AdminList(AdminHelper):
 @util.require_basic_auth
 class AdminApiRate(StaffHandler):
     def post(self, screen_name):
+        screen_name = bytes(screen_name, "utf8")
         submission = applydb.get_submission(screen_name)
         rating = self.get_argument("rating", None)
         if submission and rating != None :
@@ -216,6 +217,7 @@ class AdminApiRate(StaffHandler):
 @util.require_basic_auth
 class AdminApiComment(StaffHandler):
     def post(self, screen_name):
+        screen_name = bytes(screen_name, "utf8")
         submission = applydb.get_submission(screen_name)
         comment = self.get_argument("comment", None)
         if submission and comment != None :
@@ -224,6 +226,7 @@ class AdminApiComment(StaffHandler):
 @util.require_basic_auth
 class AdminApiTags(StaffHandler):
     def post(self, screen_name):
+        screen_name = bytes(screen_name, "utf8")
         submission = applydb.get_submission(screen_name)
         tags = self.get_argument("tags", None)
         if submission and tags != None :
