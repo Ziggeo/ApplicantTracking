@@ -16,10 +16,10 @@ class Application(tornado.web.Application):
   def __init__(self):
 
     app_settings = {
-      "cookie_secret" : settings.get("COOKIE_SECRET"),
+      "cookie_secret": settings.get("COOKIE_SECRET"),
       "debug": False,
-      "static_path" : os.path.join(os.path.dirname(__file__), "static"),
-      "template_path" : os.path.join(os.path.dirname(__file__), "templates"),
+      "static_path": os.path.join(os.path.dirname(__file__), "static"),
+      "template_path": os.path.join(os.path.dirname(__file__), "templates"),
     }
 
     handlers = [

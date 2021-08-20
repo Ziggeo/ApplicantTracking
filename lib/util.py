@@ -32,7 +32,10 @@ def require_basic_auth(handler_class):
     def get_current_user(self):
         scheme, _, token = self.request.headers.get('Authorization', '').partition(' ')
         if scheme.lower() == 'basic':
-            user, _, pwd = base64.decodestring(token).partition(':')
+            token_bytes = token.encode("utf-8")
+            data_bytes = base64.b64decode(token_bytes)
+            data_str = data_bytes.decode("utf-8")
+            user, _, pwd = data_str.partition(':')
             if self.basic_auth(user, pwd) :
                 return user
         return None

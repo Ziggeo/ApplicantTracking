@@ -1,4 +1,4 @@
-from mongo import db
+from .mongo import db
 import pymongo
 import json
 import logging
@@ -48,7 +48,7 @@ def get_submission(username):
 
 ''' Assumes only submitted submissions are wanted '''
 def get_submissions(kwargs, submitted=True, sort=None):
-    if submitted and 'submitted' not in kwargs.keys():
+    if submitted and 'submitted' not in list(kwargs.keys()):
         kwargs['submitted'] = submitted
 
     if sort == 'average_rating':
@@ -76,7 +76,7 @@ def obtain_submission(username):
     }
     for field in global_data["FIELDS"]:
         submission[field['name']] = ""
-    for i in range(0,len(global_data["VIDEOS"])):
+    for i in range(0, len(global_data["VIDEOS"])):
         submission["video" + str(i+1) + "_token"] = None
     submission_from_db = get_submission(username)
     if submission_from_db :
@@ -93,7 +93,7 @@ def rate_submission(submission, user, rating):
     update_submission(submission, {"ratings": submission["ratings"]})
 
 def comment_submission(submission, user, comment):
-    if (isinstance(submission["comment"], str) or isinstance(submission['comment'], unicode)):
+    if (isinstance(submission["comment"], str) or isinstance(submission['comment'], str)):
         submission["comment"] = {}
     submission["comment"][user] = comment
     update_submission(submission, {"comment": submission["comment"]})

@@ -1,4 +1,4 @@
 tornado
 requests
 simplejson
-pymongo
+pymongo[srv]

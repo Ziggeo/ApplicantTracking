@@ -81,10 +81,14 @@ If you want to continue using mLab outside of scope of addon, you can do that. T
 3. Go through dashboard to set everything as you prefer. Please keep in mind that you need to purchase support plan in order to be able to contact their support.
 
 To set up your Database URL please use:
-`heroku config:set DB_URL={URL YOU GOT}`
+```
+heroku config:set DB_URI={URL YOU GOT}
+```
 
 You would change `{URL YOU GOT}` with the actual URL you get, so it would look something like so:
-`heroku config:set DB_URI=mongodb://heroku_12345678:random_password@ds029017.mLab.com:29017/heroku_12345678`
+```
+heroku config:set DB_URI="mongodb+srv://heroku_12345678:random_password@ds029017.mLab.com:29017/heroku_12345678"
+```
 
 Once you do, that is it from MongoDB side.
 
@@ -121,7 +125,7 @@ sudo apt install python-pip
 Followed by pip installs like so:
 ```
 pip install tornado
-pip install pymongo
+pip install pymongo[srv]
 pip install requests
 ```
 Changelog

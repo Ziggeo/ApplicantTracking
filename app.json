@@ -2,7 +2,7 @@
   "name": "Ziggeo Applicant Tracking",
   "description": "This is a simple applicant tracking system featuring video interviews.",
   "repository": "https://github.com/Ziggeo/ApplicantTracking",
-  "logo": "https://ziggeo.com/assets/images/button_play.png",
+  "logo": "http://assets.ziggeo.com/img/button_play.png",
   "keywords": ["python", "tornado", "mongodb", "filepicker", "ziggeo", "video", "recruiting"],
   "website": "https://ziggeo.com/applicant-tracking/",
   "success_url": "/apply",

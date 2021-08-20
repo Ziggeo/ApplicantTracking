@@ -1,7 +1,7 @@
 {% if 'body_class' not in locals() %}
   {% set body_class = "" %}
 {% end %}
-{% from urlparse import urlparse %}
+{% import urllib.parse %}
 {% import settings %}
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
@@ -12,6 +12,7 @@
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <title>{% block title %}{% end %}{{ settings.get('site_title') }}</title>
+  <link rel="shortcut icon" type="image/jpg" href="{{ static_url("favicon.ico") }}"/>
   <meta name="description" content="{{ settings.get('site_description') }}" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="{{ static_url("css/bootstrap.min.css") }}" />
