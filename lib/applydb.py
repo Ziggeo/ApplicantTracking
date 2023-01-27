@@ -36,9 +36,8 @@ db.apply.submissions
 
 """
 
-db.apply.submissions.ensure_index('username')
-db.apply.submissions.ensure_index('submitted')
-db.apply.submissions.ensure_index('submission_date')
+for sub_index in ('username', 'submitted', 'submission_date'):
+    db.apply.submissions.create_index(sub_index)
 
 #def get_all(include_drafts = False):
 #    return list(db.apply.submissions.find()) if include_drafts else list(db.apply.submissions.find({"submitted": True}, sort=[('submission_date', pymongo.DESCENDING)])) 
