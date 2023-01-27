@@ -81,7 +81,7 @@ def obtain_submission(username):
     if submission_from_db :
         submission.update(submission_from_db)
         return submission
-    db.apply.submissions.insert(submission);
+    db.apply.submissions.insert_one(submission);
     return submission 
 
 def update_submission(submission, update):
