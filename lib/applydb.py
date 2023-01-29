@@ -85,7 +85,7 @@ def obtain_submission(username):
     return submission 
 
 def update_submission(submission, update):
-    db.apply.submissions.update({"username": submission["username"]}, {"$set": update})
+    db.apply.submissions.update_one({"username": submission["username"]}, {"$set": update})
 
 def rate_submission(submission, user, rating):
     submission["ratings"][user] = rating
